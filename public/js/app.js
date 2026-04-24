@@ -153,3 +153,34 @@ function backToKids() {
   updateDots();
 }
 
+document.addEventListener('DOMContentLoaded', () => {
+    // Select all buttons with the data-copy-button attribute
+    const copyButtons = document.querySelectorAll('[data-copy-button]');
+
+    copyButtons.forEach(button => {
+        button.addEventListener('click', async () => {
+            const sourceId = button.getAttribute('data-copy-source');
+            const successMessage = button.getAttribute('data-copy-message') || 'Copied!';
+            const originalHTML = button.innerHTML;
+            
+            const textToCopy = document.getElementById(sourceId).innerText;
+
+            try {
+                await navigator.clipboard.writeText(textToCopy);
+                
+                // Visual feedback
+                button.innerHTML = `<i class="bi bi-check2"></i> Done!`;
+                button.classList.replace('btn-secondary', 'btn-success');
+
+                setTimeout(() => {
+                    button.innerHTML = originalHTML;
+                    button.classList.replace('btn-success', 'btn-secondary');
+                }, 2000);
+            } catch (err) {
+                console.error('Failed to copy: ', err);
+                alert('Could not copy to clipboard.');
+            }
+        });
+    });
+});
+
